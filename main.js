@@ -4,6 +4,15 @@ const todoContainer = document.querySelector(".todo-container");
 
 let todoList = [];
 
+function initialLoad() {
+  if (!localStorage.getItem("todos")) {
+    return;
+  }
+  todoList = JSON.parse(localStorage.getItem("todos")).todoList;
+  updateUI();
+}
+
+initialLoad();
 function addTodo() {
   const todo = textarea.value;
   if (!todo) {
@@ -12,6 +21,27 @@ function addTodo() {
   console.log("Add todo: ", todo);
   todoList.push(todo);
   textarea.value = ""; // resets to empty
+  updateUI();
+}
+
+function editTodo(index) {
+  textarea.value = todoList[index];
+  todoList = todoList.filter((element, elementIndex) => {
+    if (index === elementIndex) {
+      return false;
+    }
+    return true;
+  });
+  updateUI();
+}
+
+function deleteTodo(index) {
+  todoList = todoList.filter((element, elementIndex) => {
+    if (index === elementIndex) {
+      return false;
+    }
+    return true;
+  });
   updateUI();
 }
 
@@ -33,6 +63,9 @@ function updateUI() {
         </div>`;
   });
   todoContainer.innerHTML = newInnerHTML;
+
+  // to save to localStorage
+  localStorage.setItem("todos", JSON.stringify({ todoList }));
 }
 
 addButton.addEventListener("click", addTodo);
